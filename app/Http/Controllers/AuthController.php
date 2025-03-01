@@ -58,11 +58,11 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
-    
+
     public function register(Request $request)
     {
         if (session()->has('user')) {
-            return redirect()->route('home'); 
+            return redirect()->route('home');
         }
 
         try {

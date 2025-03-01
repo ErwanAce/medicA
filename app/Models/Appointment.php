@@ -30,4 +30,17 @@ class Appointment extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
+    public function appointments()
+{
+    if ($this->role === 'patient' && $this->patient) {
+        return $this->patient->hasMany(Appointment::class, 'patient_id');
+    } elseif ($this->role === 'doctor' && $this->doctor) {
+        return $this->doctor->hasMany(Appointment::class, 'doctor_id');
+    }
+
+    return null;
+    
+}
+
 }

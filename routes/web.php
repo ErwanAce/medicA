@@ -27,3 +27,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Dashboard
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin');
 Route::get('/doctor', [DoctorController::class, 'dashboard'])->name('doctor');
+Route::get('/doctor/profile', [DoctorController::class, 'edit'])->name('doctor.profile');
+Route::post('/doctor/profile', [DoctorController::class, 'update'])->name('doctor.profile.update');
