@@ -38,8 +38,18 @@
 							<div class="contact-us-form">
 								<h2>Contactez-nous</h2>
 								<p>Pour toutes questions, vous êtes libre de nous contacter</p>
+								@if ($errors->any())
+									<div class="alert alert-danger">
+										<ul>
+											@foreach ($errors->all() as $error)
+												<li>{{ $error }}</li>
+											@endforeach
+										</ul>
+									</div>
+								@endif
 								<!-- Form -->
-								<form class="form" method="post" action="mail/mail.php">
+								<form class="form" method="post" action="{{ route('sendEmail') }}">
+									@csrf
 									<div class="row">
 										<div class="col-12">
 											<div class="form-group">
@@ -58,7 +68,7 @@
 										</div>
 										<div class="col-12">
 											<div class="form-group login-btn">
-												<button class="btn" type="submit">Envoyer	</button>
+												<button class="btn" type="submit">Envoyer</button>
 											</div>
 										</div>
 									</div>

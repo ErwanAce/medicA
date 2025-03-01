@@ -33,56 +33,65 @@
                 <h3>Réservez dès maintenant !</h3>
                 <p>Nous vous confirmerons votre rendez-vous en moins de 2 heures</p>
               </div>
+              @if ($errors->any())
+                  <div class="alert alert-danger">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif
               <form class="form" action="{{ route('appointment') }}" method="POST" id="appointment-form">
-    @csrf
-    <div class="row">
-        <!-- Spécialité (Département) -->
-        <div class="col-lg-6 col-md-6 col-12">
-            <div class="form-group">
-                <input type="text" class="form-control" value="{{ $doctor->specialty->name }}" readonly />
-                <input type="hidden" name="department" value="{{ $doctor->specialty->id }}" />
-            </div>
-        </div>
+                @csrf
+                <div class="row">
+                    <!-- Spécialité (Département) -->
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <div class="form-group">
+                            <input type="text" class="form-control" value="{{ $doctor->specialty->name }}" readonly />
+                            <input type="hidden" name="department" value="{{ $doctor->specialty->id }}" />
+                        </div>
+                    </div>
 
-        <!-- Docteur -->
-        <div class="col-lg-6 col-md-6 col-12">
-            <div class="form-group">
-                <input type="text" class="form-control" value="{{ $doctor->user->nom }} {{ $doctor->user->prenom }}" readonly />
-                <input type="hidden" name="doctor" value="{{ $doctor->id }}" />
-            </div>
-        </div>
+                    <!-- Docteur -->
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <div class="form-group">
+                            <input type="text" class="form-control" value="{{ $doctor->user->nom }} {{ $doctor->user->prenom }}" readonly />
+                            <input type="hidden" name="doctor" value="{{ $doctor->id }}" />
+                        </div>
+                    </div>
 
-        <!-- Champ de Date -->
-        <div class="col-lg-6 col-md-6 col-12">
-            <div class="form-group">
-                <input type="text" placeholder="Date" id="datepicker" name="date" />
-            </div>
-        </div>
+                    <!-- Champ de Date -->
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <div class="form-group">
+                            <input type="text" placeholder="Date" id="datepicker" name="date" />
+                        </div>
+                    </div>
 
-        <!-- Champ de Téléphone -->
-        <div class="col-lg-6 col-md-6 col-12">
-            <div class="form-group">
-                <input name="phone" type="text" placeholder="Téléphone" />
-            </div>
-        </div>
+                    <!-- Champ de Téléphone -->
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <div class="form-group">
+                            <input name="phone" type="text" placeholder="Téléphone" />
+                        </div>
+                    </div>
 
-        <!-- Message -->
-        <div class="col-lg-12 col-md-12 col-12">
-            <div class="form-group">
-                <textarea name="message" placeholder="Écrivez votre message ici..."></textarea>
-            </div>
-        </div>
+                    <!-- Message -->
+                    <div class="col-lg-12 col-md-12 col-12">
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Écrivez votre message ici..."></textarea>
+                        </div>
+                    </div>
 
-        <!-- Bouton -->
-        <div class="col-12">
-            <div class="form-group">
-                <div class="button">
-                    <button type="submit" class="btn">Réservez maintenant</button>
+                    <!-- Bouton -->
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="button">
+                                <button type="submit" class="btn">Réservez maintenant</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</form>
+            </form>
             </div>
           </div>
           <div class="col-lg-5 col-md-12">

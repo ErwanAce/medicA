@@ -76,24 +76,32 @@
 								</div>
 								<div class="col-lg-2 col-12 d-flex">
 									<div class="get-quote" style="margin-right: 8px;">
-										<a href="{{ route('list-doctors') }}" class="btn">Prendre rendez-vous</a>
+										@if(session()->has('id'))
+											@if(session('role') == 'doctor')
+												<a href="{{ route('doctor') }}" class="btn">Dashboard</a>
+											@elseif(session('role') == 'admin')
+												<a href="{{ route('admin') }}" class="btn">Dashboard</a>
+											@else
+												<a href="{{ route('list-doctors') }}" class="btn">Prendre rendez-vous</a>
+											@endif
+										@else
+											<a href="{{ route('list-doctors') }}" class="btn">Prendre rendez-vous</a>
+										@endif
 									</div>
 									<br/>   
 									<div class="get-quote">
-									@if(auth()->check())
-										<a href="{{ route('logout') }}" class="btn"
-										onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-											Se déconnecter
-										</a>
-										<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-											@csrf
-										</form>
-									@else
-										<a href="{{ route('login') }}" class="btn">Se connecter</a>
-									@endif
-
+										@if(session()->has('id'))
+											<a href="{{ route('logout') }}" class="btn"
+											onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+												Déconnexion
+											</a>
+											<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+												@csrf
+											</form>
+										@else
+											<a href="{{ route('login') }}" class="btn">Connexion</a>
+										@endif
 									</div>
-
 								</div>
 							</div>
 						</div>

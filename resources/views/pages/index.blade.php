@@ -17,7 +17,17 @@
 									<h1>Nous offrons des services <span>médicaux</span> en lesquels vous pouvez <span>avoir confiance !</span></h1>
 									<p>Des soins de confiance, à chaque étape de votre santé </p>
 									<div class="button">
-										<a href="{{ route('list-doctors') }}" class="btn">Prendre Rendez-vous</a>
+										@if(session()->has('id'))
+											@if(session('role') == 'doctor')
+												<a href="{{ route('doctor') }}" class="btn">Dashboard</a>
+											@elseif(session('role') == 'admin')
+												<a href="{{ route('admin') }}" class="btn">Dashboard</a>
+											@else
+												<a href="{{ route('list-doctors') }}" class="btn">Prendre rendez-vous</a>
+											@endif
+										@else
+											<a href="{{ route('list-doctors') }}" class="btn">Prendre rendez-vous</a>
+										@endif
 										<a href="{{ route('about') }}" class="btn primary">En Savoir Plus</a>
 									</div>
 								</div>

@@ -1,6 +1,6 @@
 @extends('pages.layouts.app')
 
-@section('title', 'register')
+@section('title', 'Mot de passe oublié')
 
 @section('content')
     @include('pages.layouts.header')
@@ -10,11 +10,11 @@
         <div class="bread-inner">
           <div class="row">
             <div class="col-12">
-              <h2>Inscription</h2>
+              <h2>Connexion</h2>
               <ul class="bread-list">
                 <li><a href="{{ route('home') }}">Accueil</a></li>
                 <li><i class="icofont-simple-right"></i></li>
-                <li class="active">Inscription</li>
+                <li class="active">Connexion</li>
               </ul>
             </div>
           </div>
@@ -23,21 +23,20 @@
     </div>
     <!-- End Breadcrumbs -->
 
-    <!-- Shop Register -->
-    <section class="register section">
+    <!-- Shop Change Password -->
+    <section class="login section">
       <div class="container">
         <div class="inner">
           <div class="row">
             <div class="col-lg-6">
-              <div class="register-left"></div>
+              <div class="login-left"></div>
             </div>
             <div class="col-lg-6">
-              <div class="register-form">
-                <h2>S'inscrire ici</h2>
+              <div class="login-form">
+                <h2>Changez le mot de passe</h2>
                 <p>
-                  Avez vous déjà un compte ? <a href="{{ route('login') }}">Se connecter ici</a>
-                </p>
-                @if ($errors->any())
+                  Nous vous avons envoyé un code OTP. Vous devez le renseigner dans le champ correspondant.</p>
+                  @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
                           @foreach ($errors->all() as $error)
@@ -47,42 +46,20 @@
                   </div>
                 @endif
                 <!-- Form -->
-                <form class="form" method="post" action="{{ route('register') }}">
+                <form class="form" method="post" action="{{ route('change-password', ['email' => $email]) }}">
                   @csrf
                   <div class="row">
                     <div class="col-12">
-                        <div class="form-group">
-                            <input type="text" id="nom" name="nom" placeholder="Nom" required />
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <input type="text" id="prenom" name="prenom" placeholder="Prenom" required />
-                        </div>
-                    </div>
-                    <div class="col-12">
-                      <div class="form-group row">
-                          <div class="col-4">
-                              <input type="text" id="day" name="day" placeholder="Jour" maxlength="2" required />
-                          </div>
-                          <div class="col-4">
-                              <input type="text" id="month" name="month" placeholder="Mois" maxlength="2" required />
-                          </div>
-                          <div class="col-4">
-                              <input type="text" id="year" name="year" placeholder="Année" maxlength="4" required />
-                          </div>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          name="codeOTP"
+                          placeholder="Code OTP"
+                          required
+                        />
                       </div>
                     </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Email" required />
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <input type="text" id="phone" name="phone" placeholder="Telephone" required />
-                        </div>
-                    </div>
+                    <br/>
                     <div class="col-12">
                       <div class="form-group password-container">
                           <input type="password" id="password" name="password" placeholder="Mot de passe" required />
@@ -100,10 +77,11 @@
                       </div>
                       <small id="message" style="color: red;"></small>
                   </div>
+                    <br/>
                     <div class="col-12">
-                        <div class="form-group login-btn">
-                            <button class="btn" type="submit" id="submitBtn" disabled>S'inscrire</button>
-                        </div>
+                      <div class="form-group login-btn">
+                        <button class="btn" type="submit">Envoyer</button>
+                      </div>
                     </div>
                   </div>
                 </form>
@@ -114,8 +92,7 @@
         </div>
       </div>
     </section>
-    <!--/ End Register -->
-
+    <!--/ End Change Password -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
           const password = document.getElementById("password");

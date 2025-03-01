@@ -309,7 +309,8 @@ body{
 }
 .header .logo {
 	float: left;
-	margin-top: 18px;
+    margin-top: 18px;
+    max-width: 200px;
 }
 .header .navbar {
 	background: none;
@@ -904,7 +905,7 @@ body{
 	padding:120px 0;
 }
 .fun-facts{
-	background:url('img/fun-bg.jpg');
+	background:url('../img/fun-bg.jpg');
 	background-size:cover;
 	background-repeat:no-repeat;
 }
@@ -1070,7 +1071,7 @@ body{
 	Start Call to action CSS
 =================================*/
 .call-action{
-	background-image:url('img/call-bg.jpg');
+	background-image:url('../img/call-bg.jpg');
 	background-size:cover;
 	background-position:center;
 	position:relative;

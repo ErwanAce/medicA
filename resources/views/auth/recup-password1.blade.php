@@ -1,6 +1,6 @@
 @extends('pages.layouts.app')
 
-@section('title', 'login')
+@section('title', 'Mot de passe oublié')
 
 @section('content')
     @include('pages.layouts.header')
@@ -33,10 +33,10 @@
             </div>
             <div class="col-lg-6">
               <div class="login-form">
-                <h2>Se connecter ici</h2>
+                <h2>Mot de passe oublié</h2>
                 <p>
-                  N'avez vous pas de compte ?
-                  <a href="{{ route('register') }}">S'inscrire ici</a>
+                  Vous vous rappelez de votre mot de passe ?
+                  <a href="{{ route('login') }}">Se connecter</a>
                 </p>
                 @if ($errors->any())
                   <div class="alert alert-danger">
@@ -48,7 +48,7 @@
                   </div>
                 @endif
                 <!-- Form -->
-                <form class="form" method="post" action="{{ route('login') }}">
+                <form class="form" method="post" action="{{ route('recup-password') }}">
                   @csrf
                   <div class="row">
                     <div class="col-12">
@@ -63,26 +63,9 @@
                     </div>
                     <br/>
                     <div class="col-12">
-                      <div class="form-group">
-                        <input
-                          type="password"
-                          name="password"
-                          placeholder="Mot de passe"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div class="col-12">
                       <div class="form-group login-btn">
-                        <button class="btn" type="submit">Se connecter</button>
+                        <button class="btn" type="submit">Envoyer</button>
                       </div>
-                      <div class="checkbox">
-                        <label class="checkbox-inline" for="2"
-                          ><input name="news" id="2" type="checkbox" />Se rappeler de
-                          moi</label
-                        >
-                      </div>
-                      <a href="{{ route('recup-password') }}" class="lost-pass">Mot de passe oublié ?</a>
                     </div>
                   </div>
                 </form>
