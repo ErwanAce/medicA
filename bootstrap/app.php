@@ -19,6 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->view('pages.404', [], 404);
             }
 
-            //return response()->view('pages.500', [], 500);
+            return response()->view('pages.500', [], 500);
         });
     })->create();
