@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 use App\Models\User;
 use App\Models\Patient;
+use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -23,15 +27,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Tentative d'authentification
-        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            throw ValidationException::withMessages([
-                'email' => ['Les identifiants sont incorrects.'],
-            ]);
-        }
+        $user = User::where('email', $request->email)->first();
 
-        // Récupération de l'utilisateur authentifié
-        $user = Auth::user();
+        // Vérification si l'utilisateur existe et si le mot de passe est correct
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['email' => 'Les identifiants sont incorrects.']);
+        }
 
         // Régénération de la session
         $request->session()->regenerate();
@@ -44,13 +45,16 @@ class AuthController extends Controller
         session()->put('role', $user->role);
 
         // Redirection selon le rôle
-        switch ($user->role) {
-            case 'patient':
-                return redirect()->route('home');
-            case 'docteur':
-                return redirect()->route('dashboard.doctor');
-            case 'admin':
-                return redirect()->route('dashboard.admin');
+        if ($user->role == 'patient') {
+            return redirect()->route('home');
+        }
+    
+        if ($user->role == 'doctor') {
+            return redirect()->route('home');
+        }
+    
+        if ($user->role == 'admin') {
+            return redirect()->route('home');
         }
     }
 
@@ -58,11 +62,11 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
-
+    
     public function register(Request $request)
     {
-        if (session()->has('user')) {
-            return redirect()->route('home');
+        if (session()->has('id')) {
+            return redirect()->route('home'); 
         }
 
         try {
@@ -126,7 +130,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        // Invalider la session et effacer les informations de l'utilisateur
+        session()->forget('id');
+        session()->forget('nom');
+        session()->forget('prenom');
+        session()->forget('email');
+        session()->forget('role');
 
         // Invalider la session
         $request->session()->invalidate();
@@ -135,4 +144,84 @@ class AuthController extends Controller
         return redirect()->route('home')->with('success', 'Déconnexion réussie.');
     }
 
+    public function recup_mdpView()
+    {
+        return view('auth.recup-password1');
+    }
+
+    public function recup_mdp(Request $request) {
+        $user = User::where('email', $request->email)->first();
+    
+        if ($user) {
+            // Génération d'un code otp
+            $codeOTP = rand(100000, 999999);
+    
+            PasswordReset::updateOrCreate(
+                ['email' => $user->email],
+                ['token' => $codeOTP, 'created_at' => now()]
+            );
+    
+            // Instanciation de PHPMailer
+            $mail = new PHPMailer(true);
+            
+            try {
+                // Paramètres SMTP
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'medicaapp226@gmail.com';
+                $mail->Password = 'emfkwjhkfgbfnrgs';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+    
+                // Expéditeur et destinataire
+                $mail->setFrom('medicaapp226@gmail.com', 'medicaApp');
+                $mail->addAddress($user->email);
+    
+                // Contenu du mail
+                $mail->isHTML(true);
+                $mail->Subject = 'Recuperation du mot de passe';
+                $mail->Body = "Bonjour, <br><br>Entrer le code OTP suivant : <strong>$codeOTP</strong><br><br>Veuillez le changer après connexion.";
+    
+                // Envoi de l'email
+                $mail->send();
+    
+                return view('auth.recup-password2', ['email' => $user->email])->with('success', 'code OTP envoyé avec succès!');
+            } catch (Exception $e) {
+                return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email: ' . $mail->ErrorInfo], 500);
+            }
+        } else {
+            return back()->withErrors(['message' => 'Email incorrect.']);
+        }
+    }
+
+    public function change_mdp(Request $request, $email) 
+    {
+        $request->validate([
+            'codeOTP' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Email incorrect !'], 402);
+        }
+
+        // Vérification du code OTP
+        $otpRecord = PasswordReset::where('email', $user->email)->first();
+
+        if (!$otpRecord || $otpRecord->token != $request->codeOTP) {
+            return response()->json(['message' => 'Code OTP invalide !'], 402);
+        }
+
+        // Mise à jour du mot de passe
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Suppression du code OTP après utilisation
+        PasswordReset::where('email', $user->email)->delete();
+        return redirect()->route('login')->with('success', 'Mot de passe mis à jour avec succès!');
+
+    }
 }
