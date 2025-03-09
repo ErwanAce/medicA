@@ -123,7 +123,8 @@
                       <td class="px-4 py-3">
                           <div class="flex items-center text-sm">
                               <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                  <img class="object-cover w-full h-full rounded-full" src="{{ $appointment->patient->user->photo ?? 'default_image_url' }}" alt="" loading="lazy" />
+                              <img class="object-cover w-full h-full rounded-full" src="{{ $appointment->patient->user->photo ?? asset('img/default_profile.png') }}" alt="Profile Image" loading="lazy" />
+
                               </div>
                               <div>
                                   <p class="font-semibold">{{ $appointment->patient->user->nom }} {{ $appointment->patient->user->prenom }}</p>

@@ -224,7 +224,6 @@ class ServiceController extends Controller
             $horairesFinal[$jourTexte] = implode(', ', $heures);
         }
 
-        // Debugging (facultatif)
         //dd($horairesFinal);
 
         return view('pages.doctor-info', compact('doctor', 'horairesFinal'));
@@ -280,6 +279,66 @@ class ServiceController extends Controller
     public function mailSuccess()
     {
         return view('pages.mail-success');
+    }
+
+    public function pastAppointments()
+    {
+        // Récupération de l'utilisateur actuellement connecté
+        $userId = session()->get('id');
+        $patient = Patient::where('user_id', $userId)->first();
+
+        // Vérifier si le patient existe
+        if ($patient) {
+            $patientId = $patient->id;
+        } else {
+            return redirect()->route('home')->withErrors(['error' => 'Patient non trouvé.']);
+        }
+
+        // Récupérer les rendez-vous passés
+        $appointments = Appointment::with('doctor.user')
+        ->where('patient_id', $patientId)
+        ->whereIn('status', ['completed', 'cancelled'])
+        ->orderBy('appointment_time', 'desc')
+        ->get();
+
+        //dd($appointments);
+
+        return view('pages.past-appointments', compact('appointments'));
+    }
+
+    public function upcomingAppointments()
+    {
+        // Récupération de l'utilisateur actuellement connecté
+        $userId = session()->get('id');
+        $patient = Patient::where('user_id', $userId)->first();
+
+        // Vérifier si le patient existe
+        if ($patient) {
+            $patientId = $patient->id;
+        } else {
+            return redirect()->route('home')->withErrors(['error' => 'Patient non trouvé.']);
+        }
+
+        // Récupérer les rendez-vous passés
+        $appointments = Appointment::with('doctor.user')
+        ->where('patient_id', $patientId)
+        ->whereIn('status', ['pending', 'confirmed'])
+        ->orderBy('appointment_time', 'desc')
+        ->get();
+
+        return view('pages.upcoming-appointments', compact('appointments'));
+    }
+
+    public function appointmentCancel($id)
+    {
+        // Trouver le rendez-vous par ID
+        $appointment = Appointment::findOrFail($id);
+
+        // Mettre à jour le statut du rendez-vous à 'cancelled'
+        $appointment->status = 'cancelled';
+        $appointment->save();
+            
+        return redirect()->back()->with('success', 'Rendez-vous annulé avec succès.');
     }
 
 }

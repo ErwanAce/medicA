@@ -3698,6 +3698,15 @@ body{
 .doctor-calendar-table table tbody tr:last-child td {
   border-bottom: none;
 }
+.doctor-calendar-table .cancel-btn {
+	background-color: #e74c3c;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: 5px;
+}  
 /*===============================
 	End Doctor Calendar CSS
 =================================*/

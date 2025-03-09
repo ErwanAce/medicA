@@ -7,49 +7,54 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Doctor;
 use App\Models\User;
 use App\Models\Patient;
+use App\Models\Appointment;
 use App\Models\Specialty;
 
 class DoctorController extends Controller
 {
 
     public function dashboard()
-{
-    $user = auth()->user();
+    {
+        // Récupération des données de l'utilisateur depuis la session
+        $userId = session('id');
+        $userRole = session('role');
 
-    $appointmentsCount = 0;
-    $upcomingAppointmentsCount = 0;
-    $treatedPatientsCount = 0;
-    $patients = collect();
+        $appointmentsCount = 0;
+        $upcomingAppointmentsCount = 0;
+        $treatedPatientsCount = 0;
+        $patients = collect();
 
-    if ($user->role === 'doctor' && $user->doctor) {
-        // Nombre total de rendez-vous
-        $appointmentsCount = $user->doctor->appointments()->count();
+        if ($userRole === 'doctor') {
+            // Récupération du médecin associé à l'utilisateur
+            $doctor = Doctor::where('user_id', $userId)->first();
 
-        // total de rendez-vous à venir ou aujourd’hui
-        $upcomingAppointmentsCount = $user->doctor->appointments()
-            ->whereDate('appointment_time', '>=', now())
-            ->count();
+            if ($doctor) {
+                // Nombre total de rendez-vous
+                $appointmentsCount = Appointment::where('doctor_id', $doctor->id)->count();
 
-        // Nombre de patients traités sans répétition
-        $treatedPatientsCount = $user->doctor->appointments()
-            ->where('status', 'completed')
-            ->distinct('patient_id')
-            ->count();
+                // Nombre total de rendez-vous à venir ou aujourd’hui
+                $upcomingAppointmentsCount = Appointment::where('doctor_id', $doctor->id)
+                    ->whereDate('appointment_time', '>=', now())
+                    ->count();
 
-            $patients = $user->doctor->appointments()
-            ->with('patient.user') // Ensure the relationship is loaded
-            ->whereDate('appointment_time', '>=', now()) // Only upcoming appointments
-            ->orderBy('appointment_time', 'asc') // Order by date
-            ->distinct('patient_id')
-            ->paginate(10); // Paginate with 10 items per page
+                // Nombre de patients traités sans répétition
+                $treatedPatientsCount = Appointment::where('doctor_id', $doctor->id)
+                    ->where('status', 'completed')
+                    ->distinct('patient_id')
+                    ->count();
 
+                // Liste des patients ayant des rendez-vous à venir
+                $patients = Appointment::where('doctor_id', $doctor->id)
+                    ->with('patient.user')
+                    ->whereDate('appointment_time', '>=', now())
+                    ->orderBy('appointment_time', 'asc')
+                    ->distinct('patient_id')
+                    ->paginate(10);
+            }
+        }
 
-
-
+        return view('dashboard.doctor', compact('appointmentsCount', 'upcomingAppointmentsCount', 'treatedPatientsCount', 'patients'));
     }
-    return view('dashboard.doctor', compact('appointmentsCount', 'upcomingAppointmentsCount', 'treatedPatientsCount', 'patients'));
-}
-
 
     public function edit()
     {

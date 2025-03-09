@@ -13,8 +13,13 @@ class Appointment extends Model
         'patient_id',
         'doctor_id',
         'appointment_time',
+        'message',
         'status',
     ];
+
+    protected $casts = [
+        'appointment_time' => 'datetime',
+    ];    
 
     public function patient()
     {
@@ -32,15 +37,15 @@ class Appointment extends Model
     }
 
     public function appointments()
-{
-    if ($this->role === 'patient' && $this->patient) {
-        return $this->patient->hasMany(Appointment::class, 'patient_id');
-    } elseif ($this->role === 'doctor' && $this->doctor) {
-        return $this->doctor->hasMany(Appointment::class, 'doctor_id');
-    }
+    {
+            if ($this->role === 'patient' && $this->patient) {
+            return $this->patient->hasMany(Appointment::class, 'patient_id');
+        } elseif ($this->role === 'doctor' && $this->doctor) {
+            return $this->doctor->hasMany(Appointment::class, 'doctor_id');
+        }
 
-    return null;
-    
-}
+        return null;
+        
+    }
 
 }

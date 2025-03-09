@@ -19,6 +19,12 @@ Route::get('/list-doctors', [ServiceController::class, 'listDoctors'])->name('li
 Route::get('/doctor/agenda/{id}', [ServiceController::class, 'agenda'])->name('doctor.agenda');
 Route::get('/doctor/info/{id}', [ServiceController::class, 'doctorInfo'])->name('doctor.info');
 
+// Patient
+Route::get('/past-appointments', [ServiceController::class, 'pastAppointments'])->name('past-appointments');
+Route::get('/upcoming-appointments', [ServiceController::class, 'upcomingAppointments'])->name('upcoming-appointments');
+Route::delete('/appointment/{appointment}/cancel', [ServiceController::class, 'appointmentCancel'])->name('appointment.cancel');
+
+
 // Auth
 Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);

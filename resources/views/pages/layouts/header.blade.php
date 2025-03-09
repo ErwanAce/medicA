@@ -66,6 +66,16 @@
 												<li class="{{ Route::is('list-doctors') ? 'active' : '' }}">
 													<a href="{{ route('list-doctors') }}">Docteurs</a>
 												</li>
+												<li class="{{ Route::is('appointment-history') ? 'active' : '' }} dropdown">
+													@if(session()->has('id') && session('role') == 'patient')
+														<a>Historique <i class="icofont-rounded-down"></i></a>
+														<ul class="dropdown">
+															<li><a href="{{ route('past-appointments') }}">Anciens rendez-vous</a></li>
+															<li><a href="{{ route('upcoming-appointments') }}">Prochains rendez-vous</a></li>
+														</ul>
+													@endif
+												</li>
+
 												<li class="{{ Route::is('contact') ? 'active' : '' }}">
 													<a href="{{ route('contact') }}">Contactez-Nous </a>
 												</li>
