@@ -11,6 +11,15 @@
       src="{{asset('js/dashboard/fullcalendar.index.global.min.js.js')}}"
       defer
     ></script>
+    <script
+      src="{{asset('js/dashboard/popper.min.js.js')}}"
+      defer
+    ></script>
+    <script
+      src="{{asset('js/dashboard/tippy-bundle.umd.min.js.js')}}"
+      defer
+    ></script>
+    <link rel="stylesheet" href="{{asset('css/dashboard/light-border.css')}}" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"

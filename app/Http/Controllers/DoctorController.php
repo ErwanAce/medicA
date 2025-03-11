@@ -95,9 +95,9 @@ class DoctorController extends Controller
 
                     $events = $patients->map(function($appointment) {
                         return [
-                            'title' => 'Patient: ' . $appointment->patient->user->name,
+                            'title' => 'Patient: ' . $appointment->patient->user->nom,
                             'start' => $appointment->appointment_time,
-                            'url' => route('appointment.details', ['id' => $appointment->id]), // Lien vers les détails
+                            //'url' => route('appointment.details', ['id' => $appointment->id]), // Lien vers les détails
                             'color' => '#007bff', // Couleur des événements
                         ];
                     })->toArray(); // Convertir en tableau pour éviter les erreurs JSON

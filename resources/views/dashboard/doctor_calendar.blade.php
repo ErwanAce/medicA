@@ -14,9 +14,6 @@
     <div id="calendar"></div>
 </div>
 
-{{-- Inclure FullCalendar via CDN --}}
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
@@ -28,11 +25,27 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            events: @json($events) // Utilisation correcte
+            events: @json($events),
+
+            eventDidMount: function (info) {
+                
+                tippy(info.el, {
+                    content: `
+                        <strong>Patient:</strong> ${info.event.title}<br>
+                        <strong>Date:</strong> ${info.event.start.toLocaleDateString()}<br>
+                        <strong>Heure:</strong> ${info.event.start.toLocaleTimeString()}<br>
+                        <strong>Statut:</strong> Consultation prévue
+                    `,
+                    allowHTML: true,
+                    theme: 'light-border',
+                    placement: 'top',
+                });
+            }
         });
 
         calendar.render();
     });
 </script>
+
 
 @endsection
