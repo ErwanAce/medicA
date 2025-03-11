@@ -55,6 +55,60 @@ class DoctorController extends Controller
 
         return view('dashboard.doctor', compact('appointmentsCount', 'upcomingAppointmentsCount', 'treatedPatientsCount', 'patients'));
     }
+    public function calendar()
+    {
+        // Récupération des données de l'utilisateur depuis la session
+        $userId = session('id');
+        $userRole = session('role');
+
+        $appointmentsCount = 0;
+        $upcomingAppointmentsCount = 0;
+        $treatedPatientsCount = 0;
+        $patients = collect();
+
+        if ($userRole === 'doctor') {
+            // Récupération du médecin associé à l'utilisateur
+            $doctor = Doctor::where('user_id', $userId)->first();
+
+            if ($doctor) {
+                // Nombre total de rendez-vous
+                $appointmentsCount = Appointment::where('doctor_id', $doctor->id)->count();
+
+                // Nombre total de rendez-vous à venir ou aujourd’hui
+                $upcomingAppointmentsCount = Appointment::where('doctor_id', $doctor->id)
+                    ->whereDate('appointment_time', '>=', now())
+                    ->count();
+
+                // Nombre de patients traités sans répétition
+                $treatedPatientsCount = Appointment::where('doctor_id', $doctor->id)
+                    ->where('status', 'completed')
+                    ->distinct('patient_id')
+                    ->count();
+
+                // Liste des patients ayant des rendez-vous à venir
+                $patients = Appointment::where('doctor_id', $doctor->id)
+                    ->with('patient.user')
+                    ->whereDate('appointment_time', '>=', now())
+                    ->orderBy('appointment_time', 'asc')
+                    ->distinct('patient_id')
+                    ->paginate(10);
+
+                    $events = $patients->map(function($appointment) {
+                        return [
+                            'title' => 'Patient: ' . $appointment->patient->user->name,
+                            'start' => $appointment->appointment_time,
+                            'url' => route('appointment.details', ['id' => $appointment->id]), // Lien vers les détails
+                            'color' => '#007bff', // Couleur des événements
+                        ];
+                    })->toArray(); // Convertir en tableau pour éviter les erreurs JSON
+
+
+            }
+        }
+
+        return view('dashboard.doctor_calendar', compact('appointmentsCount', 'upcomingAppointmentsCount', 'treatedPatientsCount', 'patients', 'events'));
+    }
+
 
     public function edit()
     {

@@ -2,6 +2,13 @@
 
 @section('title', 'Doctor | Dashboard')
 
+@section('isactive')
+<span
+    class="absolute inset-y-0 left-0 w-1 bg-blue-600 rounded-tr-lg rounded-br-lg"
+    aria-hidden="true"
+></span>
+@endsection
+
 @section('content')
 
 <div class="container px-6 mx-auto grid">

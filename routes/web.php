@@ -40,3 +40,4 @@ Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin');
 Route::get('/doctor', [DoctorController::class, 'dashboard'])->name('doctor');
 Route::get('/doctor/profile', [DoctorController::class, 'edit'])->name('doctor.profile');
 Route::post('/doctor/profile', [DoctorController::class, 'update'])->name('doctor.profile.update');
+Route::get('/doctor/calendar', [DoctorController::class, 'calendar'])->name('doctor.calendar');
