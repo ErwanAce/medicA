@@ -97,10 +97,11 @@ class DoctorController extends Controller
                         return [
                             'title' => 'Patient: ' . $appointment->patient->user->nom,
                             'start' => $appointment->appointment_time,
+                            'motif' => $appointment->message,
                             //'url' => route('appointment.details', ['id' => $appointment->id]), // Lien vers les détails
-                            'color' => '#007bff', // Couleur des événements
+                            'color' => '#007bff',
                         ];
-                    })->toArray(); // Convertir en tableau pour éviter les erreurs JSON
+                    })->toArray();
 
 
             }

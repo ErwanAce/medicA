@@ -28,10 +28,11 @@
             events: @json($events),
 
             eventDidMount: function (info) {
-                
+
                 tippy(info.el, {
                     content: `
                         <strong>Patient:</strong> ${info.event.title}<br>
+                        <strong>Motif:</strong> ${info.event.motif}<br>
                         <strong>Date:</strong> ${info.event.start.toLocaleDateString()}<br>
                         <strong>Heure:</strong> ${info.event.start.toLocaleTimeString()}<br>
                         <strong>Statut:</strong> Consultation prévue
